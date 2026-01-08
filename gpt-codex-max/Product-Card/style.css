@@ -1,287 +1,512 @@
-/* ========================
-   GLOBAL RESETS & TOKENS
-   ======================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+:root {
+  --bg-1: #060915;
+  --bg-2: #0d1831;
+  --bg-3: #121e38;
+  --cyan: #5effff;
+  --violet: #9a7bff;
+  --pink: #ff5fb3;
+  --white: #f7fbff;
+  --glass: rgba(255, 255, 255, 0.08);
+  --stroke: rgba(255, 255, 255, 0.12);
+  --shadow: 0 30px 120px rgba(0, 0, 0, 0.55);
+}
+
 html,
 body {
+  width: 100%;
   height: 100%;
 }
 
 body {
-  /* Dark blue gradient background reminiscent of premium tech brands */
-  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Inter", sans-serif;
-  color: #ffffff;
+  background: radial-gradient(
+      circle at 20% 20%,
+      rgba(94, 255, 255, 0.12),
+      transparent 32%
+    ),
+    radial-gradient(circle at 80% 0%, rgba(255, 95, 179, 0.16), transparent 30%),
+    linear-gradient(140deg, var(--bg-1) 0%, var(--bg-2) 35%, var(--bg-3) 100%);
+  color: var(--white);
+  font-family: "Space Grotesk", "Manrope", system-ui, sans-serif;
   overflow: hidden;
-  padding: 20px;
+  position: relative;
 }
 
-/* ========================
-   OVERLAY
-   ======================== */
-.overlay {
+#bg-canvas {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
-  opacity: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
   pointer-events: none;
-  transition: opacity 0.4s ease;
-  z-index: 5;
-}
-.overlay.active {
-  opacity: 1;
-  pointer-events: auto;
 }
 
-/* ========================
-   3-D SCENE & CARD
-   ======================== */
-.scene {
-  /* Clamp ensures the card never shrinks too small or grows too large */
-  width: clamp(280px, 90vw, 360px);
-  height: clamp(460px, 90vh, 560px);
-  perspective: 1200px;
+.veil {
+  position: fixed;
+  inset: -10% -10% -10% -10%;
+  background: radial-gradient(
+      circle at 50% 60%,
+      rgba(255, 255, 255, 0.07),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 70% 20%,
+      rgba(154, 123, 255, 0.15),
+      transparent 40%
+    );
+  filter: blur(40px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.scanlines {
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 1px
+  );
+  background-size: 100% 3px;
+  mix-blend-mode: soft-light;
+  opacity: 0.6;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.noise {
+  position: fixed;
+  inset: 0;
+  background-image: url("https://raw.githubusercontent.com/Hasnayeen/noise.css/main/noise.png");
+  opacity: 0.05;
+  animation: grain 8s steps(8) infinite;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.stage {
+  position: relative;
+  z-index: 4;
+  width: min(1200px, 92vw);
+  margin: 0 auto;
+  padding: 60px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.hero {
+  max-width: 880px;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(94, 255, 255, 0.2),
+    rgba(154, 123, 255, 0.25)
+  );
+  border: 1px solid var(--stroke);
+  letter-spacing: 0.08em;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.headline {
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  line-height: 1.05;
+  margin-top: 14px;
+}
+
+.subhead {
+  margin-top: 12px;
+  color: rgba(247, 251, 255, 0.75);
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.holo-orbit {
+  position: absolute;
+  inset: -10% 0 auto;
+  width: 100%;
+  height: 380px;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.45));
+}
+
+.orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 40px rgba(94, 255, 255, 0.2),
+    inset 0 0 40px rgba(154, 123, 255, 0.2);
+  mix-blend-mode: screen;
+}
+
+.orbit-1 {
+  width: 640px;
+  height: 200px;
+  animation: orbit 16s linear infinite;
+}
+.orbit-2 {
+  width: 520px;
+  height: 160px;
+  animation: orbit 22s linear infinite reverse;
+}
+.orbit-3 {
+  width: 420px;
+  height: 120px;
+  animation: orbit 26s linear infinite;
+}
+
+@keyframes orbit {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg) scaleX(1);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg) scaleX(1);
+  }
 }
 
 .card {
   position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 25px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(15px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-  transform-style: preserve-3d;
-  cursor: pointer;
-  transition: transform 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-}
-.card.is-flipped {
-  transform: rotateY(180deg);
-}
-
-/* ========================
-   CARD FACES
-   ======================== */
-.card-face {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding: 30px 25px;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid var(--stroke);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.02)
+  );
+  box-shadow: var(--shadow);
+  padding: clamp(22px, 3vw, 32px);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  backface-visibility: hidden;
+  gap: 20px;
+  transform-style: preserve-3d;
 }
 
-.card-front {
+.card-glow {
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 70%;
+  background: radial-gradient(
+      circle at 50% 40%,
+      rgba(94, 255, 255, 0.3),
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 70% 10%,
+      rgba(255, 95, 179, 0.45),
+      transparent 45%
+    );
+  filter: blur(60px);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.card-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px;
+  mask-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.light-ring {
+  position: absolute;
+  width: 460px;
+  height: 460px;
+  top: -220px;
+  right: -180px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.22),
+    rgba(94, 255, 255, 0.08),
+    transparent 65%
+  );
+  filter: blur(30px);
+  mix-blend-mode: screen;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
   z-index: 2;
 }
-.card-back {
-  transform: rotateY(180deg);
-  justify-content: center;
-  text-align: center;
+
+.tag {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(94, 255, 255, 0.15);
+  border: 1px solid rgba(94, 255, 255, 0.35);
+  color: var(--white);
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
-/* Visual radial highlight */
-.circle-bg {
-  position: absolute;
-  width: 480px;
-  height: 480px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(132, 237, 255, 0.55) 0%, rgba(0, 198, 233, 0.3) 100%);
-  top: -220px;
-  left: 50%;
-  transform: translateX(-50%);
-  pointer-events: none;
-  filter: blur(5px);
+.chip {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
-/* ========================
-   PRODUCT VISUALS
-   ======================== */
-.product-name {
-  font-size: 1.6rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  text-align: center;
+.card-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(22px, 2vw, 40px);
+  align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
-.product-img {
-  width: 75%;
-  max-width: 260px;
-  transform: rotate(-20deg);
-  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4));
-  transition: transform 0.6s ease;
+.text-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
-.card:hover .product-img {
-  transform: rotate(-10deg) translateY(-10px);
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+
+.product {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  letter-spacing: -0.02em;
+}
+
+.desc {
+  color: rgba(247, 251, 255, 0.78);
+  line-height: 1.7;
+}
+
+.price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 10px;
 }
 
 .price {
-  font-weight: 600;
-  font-size: 2rem;
-  margin: 25px 0 10px;
-  color: #84edff;
+  font-size: 1.7rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
-/* ========================
-   SIZE SELECTOR
-   ======================== */
 .sizes {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 30px;
-  list-style: none;
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--stroke);
+  border-radius: 14px;
+  padding: 6px;
+  gap: 6px;
 }
 
 .size {
-  padding: 10px 16px;
+  min-width: 46px;
+  padding: 10px 0;
+  border: none;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: var(--white);
+  font-weight: 700;
+  letter-spacing: 0.04em;
   cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
-.size.active,
 .size:hover {
-  background: #00c6e9;
-  color: #000;
+  background: rgba(255, 255, 255, 0.08);
+}
+.size.active {
+  background: linear-gradient(
+    120deg,
+    rgba(94, 255, 255, 0.3),
+    rgba(154, 123, 255, 0.45)
+  );
+  box-shadow: 0 10px 30px rgba(154, 123, 255, 0.2);
 }
 
-/* ========================
-   BUTTONS
-   ======================== */
-.btn-container {
-  display: flex;
-  width: 100%;
-  gap: 10px;
+.cta-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
 }
 
 .btn {
-  flex: 1;
-  padding: 12px 0;
-  border: none;
+  position: relative;
+  padding: 14px 16px;
   border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--white);
+  font-weight: 700;
+  letter-spacing: 0.02em;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.3s ease;
+  overflow: hidden;
+  transition: transform 0.15s ease, border 0.2s ease;
 }
 
-.btn.buy {
-  background: #00c6e9;
-  color: #000;
-}
-
-.btn.cart {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(94, 255, 255, 0.3),
+    rgba(154, 123, 255, 0.3)
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
 .btn:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
+}
+.btn:hover::after {
+  opacity: 1;
+}
+.btn.primary {
+  border: 1px solid rgba(94, 255, 255, 0.6);
+  background: linear-gradient(
+    120deg,
+    rgba(94, 255, 255, 0.2),
+    rgba(154, 123, 255, 0.2)
+  );
+}
+.btn.ghost {
+  backdrop-filter: blur(8px);
 }
 
-.card-back .btn.back-btn {
-  margin-top: 30px;
-  background: #00c6e9;
-  color: #000;
+.visual-stack {
+  position: relative;
+  width: min(480px, 90vw);
+  aspect-ratio: 4 / 3;
+  margin: 0 auto;
 }
 
-/* ========================
-   DETAILS ON BACK FACE
-   ======================== */
-.description {
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: 20px;
-}
-
-.features {
-  list-style: none;
-  text-align: left;
-}
-.features li {
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-}
-.features i {
-  color: #00c6e9;
-  margin-right: 6px;
-}
-
-/* ========================
-   RESPONSIVE TWEAKS
-   ======================== */
-@media (max-width: 600px) {
-  .scene {
-    width: 100%;
-    height: auto;
-    perspective: 800px;
-  }
-  .card {
-    height: auto;
-  }
-  .card-face {
-    padding: 25px 20px;
-  }
-}
-
-/* ========================
-   DYNAMIC LIGHT
-   ======================== */
-.dynamic-light {
+.parallax.layer {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 450px;
-  height: 450px;
-  border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.9) 0%, rgba(0, 198, 233, 0.15) 60%, rgba(0, 0, 0, 0) 100%);
-  mix-blend-mode: screen;
-  opacity: 0.35;
-  filter: blur(80px);
-  transform: translate(-50%, -50%);
+  inset: 0;
+  will-change: transform;
 }
 
-/* ========================
-   PARTICLE CANVAS
-   ======================== */
-#particleCanvas {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 7;
+.plasma {
+  background: radial-gradient(
+      circle at 30% 30%,
+      rgba(94, 255, 255, 0.25),
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 70% 40%,
+      rgba(154, 123, 255, 0.25),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 50% 70%,
+      rgba(255, 95, 179, 0.15),
+      transparent 50%
+    );
+  filter: blur(30px);
+  transform: scale(1.1);
 }
 
-/* ========================
-   NOISE OVERLAY
-   ======================== */
-.noise {
-  position: fixed;
-  inset: 0;
+.glass {
+  background: radial-gradient(
+    circle at 40% 40%,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0)
+  );
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+}
+
+.product-img {
+  width: 105%;
+  height: 105%;
+  object-fit: contain;
+  transform: rotate(-16deg) translateY(-6%);
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 15px 30px rgba(94, 255, 255, 0.25));
   pointer-events: none;
-  background-image: url("https://raw.githubusercontent.com/Hasnayeen/noise.css/main/noise.png");
-  opacity: 0.04;
-  animation: grain 8s steps(10) infinite;
-  z-index: 9;
+}
+
+.glow {
+  background: radial-gradient(
+    circle at 50% 65%,
+    rgba(94, 255, 255, 0.25),
+    transparent 60%
+  );
+  filter: blur(40px);
+}
+
+.card-bottom {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  border: 1px solid var(--stroke);
+  position: relative;
+  z-index: 2;
+}
+
+.spec {
+  display: grid;
+  gap: 6px;
+}
+.label {
+  color: rgba(247, 251, 255, 0.6);
+  letter-spacing: 0.04em;
+  font-size: 12px;
+}
+.value {
+  font-weight: 700;
 }
 
 @keyframes grain {
@@ -317,5 +542,40 @@ body {
   }
   100% {
     transform: translate(0, 0);
+  }
+}
+
+@media (max-width: 900px) {
+  .holo-orbit {
+    height: 240px;
+  }
+  .headline {
+    font-size: clamp(2rem, 6vw, 3rem);
+  }
+  .visual-stack {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    overflow-y: auto;
+  }
+  .stage {
+    padding: 42px 0 60px;
+  }
+  .card {
+    padding: 18px;
+  }
+  .cta-row {
+    grid-template-columns: 1fr;
+  }
+  .price-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .sizes {
+    width: 100%;
+    justify-content: space-between;
   }
 }
