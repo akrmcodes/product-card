@@ -1,0 +1,321 @@
+/* ========================
+   GLOBAL RESETS & TOKENS
+   ======================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  /* Dark blue gradient background reminiscent of premium tech brands */
+  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
+  color: #ffffff;
+  overflow: hidden;
+  padding: 20px;
+}
+
+/* ========================
+   OVERLAY
+   ======================== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 5;
+}
+.overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ========================
+   3-D SCENE & CARD
+   ======================== */
+.scene {
+  /* Clamp ensures the card never shrinks too small or grows too large */
+  width: clamp(280px, 90vw, 360px);
+  height: clamp(460px, 90vh, 560px);
+  perspective: 1200px;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  transform-style: preserve-3d;
+  cursor: pointer;
+  transition: transform 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+.card.is-flipped {
+  transform: rotateY(180deg);
+}
+
+/* ========================
+   CARD FACES
+   ======================== */
+.card-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  backface-visibility: hidden;
+}
+
+.card-front {
+  z-index: 2;
+}
+.card-back {
+  transform: rotateY(180deg);
+  justify-content: center;
+  text-align: center;
+}
+
+/* Visual radial highlight */
+.circle-bg {
+  position: absolute;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(132, 237, 255, 0.55) 0%, rgba(0, 198, 233, 0.3) 100%);
+  top: -220px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter: blur(5px);
+}
+
+/* ========================
+   PRODUCT VISUALS
+   ======================== */
+.product-name {
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.product-img {
+  width: 75%;
+  max-width: 260px;
+  transform: rotate(-20deg);
+  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4));
+  transition: transform 0.6s ease;
+}
+.card:hover .product-img {
+  transform: rotate(-10deg) translateY(-10px);
+}
+
+.price {
+  font-weight: 600;
+  font-size: 2rem;
+  margin: 25px 0 10px;
+  color: #84edff;
+}
+
+/* ========================
+   SIZE SELECTOR
+   ======================== */
+.sizes {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  list-style: none;
+}
+
+.size {
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.size.active,
+.size:hover {
+  background: #00c6e9;
+  color: #000;
+}
+
+/* ========================
+   BUTTONS
+   ======================== */
+.btn-container {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.btn.buy {
+  background: #00c6e9;
+  color: #000;
+}
+
+.btn.cart {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+}
+
+.card-back .btn.back-btn {
+  margin-top: 30px;
+  background: #00c6e9;
+  color: #000;
+}
+
+/* ========================
+   DETAILS ON BACK FACE
+   ======================== */
+.description {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.features {
+  list-style: none;
+  text-align: left;
+}
+.features li {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.features i {
+  color: #00c6e9;
+  margin-right: 6px;
+}
+
+/* ========================
+   RESPONSIVE TWEAKS
+   ======================== */
+@media (max-width: 600px) {
+  .scene {
+    width: 100%;
+    height: auto;
+    perspective: 800px;
+  }
+  .card {
+    height: auto;
+  }
+  .card-face {
+    padding: 25px 20px;
+  }
+}
+
+/* ========================
+   DYNAMIC LIGHT
+   ======================== */
+.dynamic-light {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.9) 0%, rgba(0, 198, 233, 0.15) 60%, rgba(0, 0, 0, 0) 100%);
+  mix-blend-mode: screen;
+  opacity: 0.35;
+  filter: blur(80px);
+  transform: translate(-50%, -50%);
+}
+
+/* ========================
+   PARTICLE CANVAS
+   ======================== */
+#particleCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 7;
+}
+
+/* ========================
+   NOISE OVERLAY
+   ======================== */
+.noise {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("https://raw.githubusercontent.com/Hasnayeen/noise.css/main/noise.png");
+  opacity: 0.04;
+  animation: grain 8s steps(10) infinite;
+  z-index: 9;
+}
+
+@keyframes grain {
+  0% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-5%, -10%);
+  }
+  20% {
+    transform: translate(-15%, 5%);
+  }
+  30% {
+    transform: translate(7%, -25%);
+  }
+  40% {
+    transform: translate(-5%, 25%);
+  }
+  50% {
+    transform: translate(-15%, 10%);
+  }
+  60% {
+    transform: translate(15%, 0);
+  }
+  70% {
+    transform: translate(0, 15%);
+  }
+  80% {
+    transform: translate(3%, 10%);
+  }
+  90% {
+    transform: translate(-10%, 10%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
