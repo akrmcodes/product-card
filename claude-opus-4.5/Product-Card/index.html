@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hyperwave Product Card</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-KyZXEAg3QhqLMpG8r+8jhAXgTVvhyeed5+QeNivn9LVNEy7R8V5DGvSVojYiKcR4DUxvImZdvFyEq3Wef3u+Ig==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+    <canvas id="stars"></canvas>
+    <div class="vignette"></div>
+    <div class="gradient-aurora"></div>
+    <div class="floating-orb orb-a"></div>
+    <div class="floating-orb orb-b"></div>
+    <div class="floating-orb orb-c"></div>
+
+    <main class="frame">
+        <header class="hud">
+            <span class="badge">Series 07</span>
+            <div class="hud-line"></div>
+            <span class="meta">Reactive Motion Card</span>
+        </header>
+
+        <section class="hero">
+            <div class="card-wrap" id="cardWrap">
+                <div class="card-glow" aria-hidden="true"></div>
+                <article class="card" id="card" aria-label="Product card">
+                    <div class="card-shine" id="cardShine"></div>
+                    <div class="card-grid"></div>
+                    <div class="card-content">
+                        <div class="card-top">
+                            <div class="left">
+                                <p class="eyebrow">Limited Drop</p>
+                                <h1 class="title">Vaporstride Zero-G</h1>
+                                <p class="subtitle">Feather-knit upper. Ionfoam midsole. Magnetic lacing.</p>
+                            </div>
+                            <div class="right">
+                                <div class="price-block">
+                                    <span class="label">Launch price</span>
+                                    <span class="price">$ 599</span>
+                                </div>
+                                <button class="chip">In stock</button>
+                            </div>
+                        </div>
+
+                        <div class="visual-stack">
+                            <div class="halo" aria-hidden="true"></div>
+                            <img src="../images/shose.png" class="product" alt="Futuristic white sneaker" />
+                            <div class="floating-tag tag-left">Carbon weave</div>
+                            <div class="floating-tag tag-right">Ionfoam 2.0</div>
+                        </div>
+
+                        <div class="cta-row">
+                            <div class="sizes" aria-label="Select size">
+                                <button class="size is-active">US 7</button>
+                                <button class="size">US 8</button>
+                                <button class="size">US 9</button>
+                                <button class="size">US 10</button>
+                            </div>
+                            <div class="cta-buttons">
+                                <button class="btn ghost" id="flipBtn">
+                                    <span>Specs</span>
+                                    <i class="fa-regular fa-circle-question"></i>
+                                </button>
+                                <button class="btn solid" id="buyBtn">
+                                    <span>Secure Purchase</span>
+                                    <i class="fa-solid fa-arrow-up-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-back" id="cardBack">
+                        <div class="back-header">
+                            <p class="eyebrow">Technical spec</p>
+                            <h2>Vaporstride Zero-G</h2>
+                            <p class="subtitle">Built for lunar lightness and earth pace.</p>
+                        </div>
+                        <ul class="spec-list">
+                            <li><span>Upper</span><span>Feather-knit nano yarn</span></li>
+                            <li><span>Midsole</span><span>Ionfoam 2.0 + anti-grav plate</span></li>
+                            <li><span>Outsole</span><span>Graphene tread with flex grooves</span></li>
+                            <li><span>Energy return</span><span>86% rebound</span></li>
+                            <li><span>Weight</span><span>182 g</span></li>
+                        </ul>
+                        <div class="cta-buttons back-actions">
+                            <button class="btn ghost" id="backBtn">Close</button>
+                            <button class="btn solid">
+                                <span>Add to Vault</span>
+                                <i class="fa-solid fa-lock"></i>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <aside class="side-info">
+                <div class="stat">
+                    <span class="label">Cushion index</span>
+                    <div class="bar"><span style="width: 92%"></span></div>
+                    <p class="value">92 / 100</p>
+                </div>
+                <div class="stat">
+                    <span class="label">Stability</span>
+                    <div class="bar"><span style="width: 81%"></span></div>
+                    <p class="value">81 / 100</p>
+                </div>
+                <div class="stat">
+                    <span class="label">Energy return</span>
+                    <div class="bar"><span style="width: 86%"></span></div>
+                    <p class="value">86 / 100</p>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
