@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Next-Gen Product Card</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-KyZXEAg3QhqLMpG8r+8jhAXgTVvhyeed5+QeNivn9LVNEy7R8V5DGvSVojYiKcR4DUxvImZdvFyEq3Wef3u+Ig==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- GSAP -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+    <!-- Dim overlay (used on small screens when card is flipped) -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Global particle canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- 3-D scene wrapper -->
+    <div class="scene" id="scene">
+        <span class="dynamic-light" id="dynamicLight"></span>
+        <article class="card" id="productCard" aria-label="Product card">
+            <!-- ================== FRONT ================== -->
+            <section class="card-face card-front">
+                <span class="circle-bg"></span>
+
+                <h1 class="product-name">Modern Sneaker</h1>
+
+                <img class="product-img" src="../images/shose.png" alt="White modern sneaker" />
+
+                <h2 class="price">$ 599</h2>
+
+                <ul class="sizes" aria-label="Pick shoe size">
+                    <li class="size">4</li>
+                    <li class="size">6</li>
+                    <li class="size active">7</li>
+                    <li class="size">8</li>
+                </ul>
+
+                <div class="btn-container">
+                    <button class="btn buy">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        Buy now
+                    </button>
+                    <button class="btn cart">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        Add to cart
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================== BACK ================== -->
+            <section class="card-face card-back">
+                <h2>Product Details</h2>
+                <p class="description">
+                    Engineered for comfort and designed for style, our Modern Sneaker
+                    features breathable knit uppers, a cloud-foam sole and
+                    eco-friendly materials. Perfect for city exploration or gym sessions.
+                </p>
+
+                <ul class="features">
+                    <li><i class="fa-solid fa-check"></i> Ultra-light knit</li>
+                    <li><i class="fa-solid fa-check"></i> Cloud-foam cushioning</li>
+                    <li><i class="fa-solid fa-check"></i> 80% recycled materials</li>
+                </ul>
+
+                <button class="btn back-btn">Back</button>
+            </section>
+        </article>
+    </div>
+
+    <!-- Subtle moving noise texture -->
+    <div class="noise"></div>
+
+    <!-- Scripts -->
+    <script src="app.js" defer></script>
+</body>
+</html>
