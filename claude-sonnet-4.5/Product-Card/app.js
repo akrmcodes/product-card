@@ -6,7 +6,13 @@
    responsive overlay handling, and utility helpers for the product card.
    ================================================================= */
 
-(() => {
+// Wait for DOM and GSAP to be ready
+document.addEventListener('DOMContentLoaded', function() {
+  // Register GSAP plugins
+  if (typeof gsap !== 'undefined' && gsap.registerPlugin) {
+    gsap.registerPlugin(ScrollTrigger);
+  }
+
   // Element refs ---------------------------------------------------
   const scene = document.getElementById("scene");
   const card = document.getElementById("productCard");
@@ -17,11 +23,12 @@
   // Futuristic extras -------------------------------------------------
   const dynamicLight = document.getElementById("dynamicLight");
   const particleCanvas = document.getElementById("particleCanvas");
-  const ctx = particleCanvas.getContext("2d");
+  const ctx = particleCanvas ? particleCanvas.getContext("2d") : null;
   const particles = [];
 
   // Resize canvas to full screen
   function resizeCanvas() {
+    if (!particleCanvas || !ctx) return;
     particleCanvas.width = window.innerWidth * devicePixelRatio;
     particleCanvas.height = window.innerHeight * devicePixelRatio;
     ctx.setTransform(1, 0, 0, 1, 0, 0); // reset any prior scaling
@@ -30,32 +37,29 @@
   resizeCanvas();
   window.addEventListener("resize", resizeCanvas);
 
-  // Register GSAP plugins
-  if (gsap.registerPlugin) {
-    gsap.registerPlugin(ScrollTrigger);
-  }
-
   // Feature detection: Disable hover tilt on touch-only devices
   const isTouchDevice = window.matchMedia("(hover: none)").matches;
 
   /* ---------------------------------------------------------------
      INITIAL ENTRANCE ANIMATIONS
   --------------------------------------------------------------- */
-  gsap.from(card, {
-    y: 60,
-    opacity: 0,
-    duration: 1.2,
-    ease: "power4.out",
-  });
+  if (typeof gsap !== 'undefined') {
+    gsap.from(card, {
+      y: 60,
+      opacity: 0,
+      duration: 1.2,
+      ease: "power4.out",
+    });
 
-  gsap.from(".product-img", {
-    y: 40,
-    opacity: 0,
-    rotate: -40,
-    duration: 1,
-    delay: 1,
-    ease: "power4.out",
-  });
+    gsap.from(".product-img", {
+      y: 40,
+      opacity: 0,
+      rotate: -40,
+      duration: 1,
+      delay: 1,
+      ease: "power4.out",
+    });
+  }
 
   /* ---------------------------------------------------------------
      3-D HOVER (Desktop only)
@@ -75,21 +79,25 @@
     const rotateY = xFactor * maxRotate;
     const rotateX = -yFactor * maxRotate;
 
-    gsap.to(card, {
-      duration: 0.6,
-      rotateY,
-      rotateX,
-      ease: "power3.out",
-    });
+    if (typeof gsap !== 'undefined') {
+      gsap.to(card, {
+        duration: 0.6,
+        rotateY,
+        rotateX,
+        ease: "power3.out",
+      });
+    }
   }
 
   function resetHover() {
-    gsap.to(card, {
-      duration: 0.8,
-      rotateX: 0,
-      rotateY: 0,
-      ease: "power3.out",
-    });
+    if (typeof gsap !== 'undefined') {
+      gsap.to(card, {
+        duration: 0.8,
+        rotateX: 0,
+        rotateY: 0,
+        ease: "power3.out",
+      });
+    }
   }
 
   /* ---------------------------------------------------------------
@@ -125,11 +133,13 @@
       size.classList.add("active");
 
       // Optional: subtle feedback animation
-      gsap.fromTo(
-        size,
-        { scale: 0.9 },
-        { scale: 1, duration: 0.25, ease: "power2.out" }
-      );
+      if (typeof gsap !== 'undefined') {
+        gsap.fromTo(
+          size,
+          { scale: 0.9 },
+          { scale: 1, duration: 0.25, ease: "power2.out" }
+        );
+      }
     });
   });
 
@@ -146,21 +156,34 @@
   function createParticleBurst(x, y) {
     const colors = ["#84edff", "#00c6e9", "#ffffff"];
     for (let i = 0; i < 28; i++) {
+      const gsapUtils = (typeof gsap !== 'undefined' && gsap.utils) ? gsap.utils : {
+        random: (a, b) => Math.random() * (b - a) + a
+      };
       particles.push({
         x,
         y,
-        radius: gsap.utils.random(2, 5),
+        radius: gsapUtils.random(2, 5),
         alpha: 1,
-        angle: gsap.utils.random(0, Math.PI * 2),
-        speed: gsap.utils.random(1, 5),
+        angle: gsapUtils.random(0, Math.PI * 2),
+        speed: gsapUtils.random(1, 5),
         color: colors[Math.floor(Math.random() * colors.length)],
       });
     }
   }
 
-  gsap.ticker.add(renderParticles);
+  if (typeof gsap !== 'undefined' && gsap.ticker) {
+    gsap.ticker.add(renderParticles);
+  } else {
+    // Fallback animation loop
+    function animate() {
+      renderParticles();
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
 
   function renderParticles() {
+    if (!ctx || !particleCanvas) return;
     ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
@@ -189,17 +212,19 @@
   /* ---------------------------------------------------------------
      SCROLL-BASED CARD ENTRANCE (cinematic feel)
   --------------------------------------------------------------- */
-  if (ScrollTrigger) {
+  if (typeof ScrollTrigger !== 'undefined') {
     ScrollTrigger.create({
       trigger: card,
       start: "top 80%",
       once: true,
       onEnter: () => {
-        gsap.fromTo(
-          card,
-          { y: 80, scale: 0.8, opacity: 0 },
-          { y: 0, scale: 1, opacity: 1, duration: 1.4, ease: "expo.out" }
-        );
+        if (typeof gsap !== 'undefined') {
+          gsap.fromTo(
+            card,
+            { y: 80, scale: 0.8, opacity: 0 },
+            { y: 0, scale: 1, opacity: 1, duration: 1.4, ease: "expo.out" }
+          );
+        }
       },
     });
   }
@@ -209,6 +234,8 @@
     const bounds = scene.getBoundingClientRect();
     const x = e.clientX - bounds.left;
     const y = e.clientY - bounds.top;
-    gsap.to(dynamicLight, { x, y, duration: 0.4, ease: "power3.out" });
+    if (typeof gsap !== 'undefined' && dynamicLight) {
+      gsap.to(dynamicLight, { x, y, duration: 0.4, ease: "power3.out" });
+    }
   }
-})();
+});
